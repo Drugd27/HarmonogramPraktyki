@@ -1,0 +1,5 @@
+#tabela, tr, th, td {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid black;
+}
