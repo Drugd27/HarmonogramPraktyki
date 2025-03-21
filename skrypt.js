@@ -1,5 +1,9 @@
 function filtruj() {
 
-    let opis = document.getElementById("opis");
+    let opis = document.getElementById("opis").checked;
+    
+    if(opis) {
+        
+    }
 
 }

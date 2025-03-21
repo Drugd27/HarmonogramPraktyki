@@ -1,0 +1,9 @@
+{
+    "name": "tekom-praktyki/harmonogram",
+    "description": "tworzenie raportow z bazy danych",
+    "type": "library",
+    "require": {
+        "phpoffice/phpword": "^1.3"
+    },
+    "minimum-stability": "stable"
+}

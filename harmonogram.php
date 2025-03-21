@@ -29,10 +29,26 @@
     <br><br>
     <div>
         <img src="silly-cat.gif" alt="Infinite Silliness!!"/>
+        <br><br>
+    </div>
+    
+    <div id="raport" name="raport">
+        <h3>Generuj raport dla pracownika:</h3><br>
+        <select>
+            <option value="PaulinaKucharska">Paulina Kucharska</option>
+            <option value="Norbert Gierczak">Norbert Gierczak</option>
+            <option value="Daniel Jaskółka">Daniel Jaskółka</option>
+            <option value="Paweł Bocian">Paweł Bocian</option>
+            <option value="Norbert Ciemniak">Norbert Ciemniak</option>
+            <option value="Mikołaj Młynarski">Mikołaj Młynarski</option>
+        </select> &nbsp&nbsp&nbsp
+        <button id="generateReport">Generuj raport</button><br>
     </div>
 </section>
 
 <?php
+
+
     $servername = "localhost";
     $username = "root";
     $password = "";
@@ -69,6 +85,8 @@
     echo "<section id='right'>";
     echo "<table id='tabela'>";
     if ($result->num_rows > 0) {
+
+        
         echo "<tr>";
         echo "<th id='data'>Data</th>";
         echo "<th>Godzina</th>";
