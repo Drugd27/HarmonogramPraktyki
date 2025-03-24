@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9cac857481807e2ab5e268000f9af370",
+    "content-hash": "2efb9f63f8508025142d300c29e0df1d",
     "packages": [
         {
             "name": "phpoffice/math",

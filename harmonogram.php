@@ -6,24 +6,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <link rel="script" href="skrypt.js">
+    
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         <?php include 'style.css'; ?>
     </style>
+    <script>
+        <?php include 'skrypt.js'; ?>   
+    </script>
+
 </head>
 <body class="build">
+<link rel="script" href="skrypt.js">
 <header>
     <h2>Harmonogram pracy od 17.03.2025 do 24.03.2025</h2>
 </header>
 <section id='left'>
     <form action="harmonogram.php" method="POST" id="filtry">
         <h3>Wybierz zakres dat:</h3>
-        od: <input type="date" name="data_od">
-        do: <input type="date" name="data_do">
+        <label>od: </label>
+        <input type="date" name="data_od" value="<?php echo isset($_POST['data_od']) ? $_POST['data_od'] : ''; ?>">
+        <label>do: </label>
+        <input type="date" name="data_do" value="<?php echo isset($_POST['data_do']) ? $_POST['data_do'] : ''; ?>">
         <br><br> &nbsp
-        <input type="checkbox" id="opis" name="opis"> Wyświetl opisy prac
+        <input type="checkbox" id="opis" name="opis"> <span>Wyświetl opisy prac</span> <br>
+        <input type="checkbox" id="auto_refresh" name="auto_refresh" onchange="refresh()"> <span>Automatyczne odświeżanie   </span> <br>
         <input type="submit" value="Filtruj" id="filtr_bttn">
+
     </form>
     
     <br><br>
@@ -34,20 +43,24 @@
     
     <div id="raport" name="raport">
         <h3>Generuj raport dla pracownika:</h3><br>
-        <select>
-            <option value="PaulinaKucharska">Paulina Kucharska</option>
-            <option value="Norbert Gierczak">Norbert Gierczak</option>
-            <option value="Daniel Jaskółka">Daniel Jaskółka</option>
-            <option value="Paweł Bocian">Paweł Bocian</option>
-            <option value="Norbert Ciemniak">Norbert Ciemniak</option>
-            <option value="Mikołaj Młynarski">Mikołaj Młynarski</option>
-        </select> &nbsp&nbsp&nbsp
-        <button id="generateReport">Generuj raport</button><br>
+        <form action="generate_report.php" method="POST">
+            <select name="pracownik">
+                <option value="Paulina Kucharska">Paulina Kucharska</option>
+                <option value="Norbert Gierczak">Norbert Gierczak</option>
+                <option value="Daniel Jaskółka">Daniel Jaskółka</option>
+                <option value="Paweł Bocian">Paweł Bocian</option>
+                <option value="Norbert Ciemniak">Norbert Ciemniak</option>
+                <option value="Mikołaj Młynarski">Mikołaj Młynarski</option>
+            </select> &nbsp&nbsp&nbsp
+            <input type="submit" id="generateReport" value="Generuj raport"><br>
+        </form>
     </div>
 </section>
 
 <?php
+    require_once __DIR__ . '/vendor/autoload.php';
 
+    use PhpOffice\PhpWord\PhpWord;
 
     $servername = "localhost";
     $username = "root";
@@ -60,16 +73,14 @@
         die("Nie połączono z bazą danych: " . $conn->connect_error);
     }
 
-    // Get the selected dates and checkbox value from the form
     $data_od = isset($_POST['data_od']) ? $_POST['data_od'] : null;
     $data_do = isset($_POST['data_do']) ? $_POST['data_do'] : null;
-    $opis_checked = isset($_POST['opis']); // True if checkbox is checked
+    $opis_checked = isset($_POST['opis']); 
 
-    // Build the SQL query
     $sql = "SELECT Data, Pracownik, Firma, Opis, Godzina 
             FROM `harmonogram`";
 
-    // Add date filtering
+    // Filtrowanie danych
     if ($data_od && $data_do) {
         $sql .= " WHERE Data BETWEEN '$data_od' AND '$data_do'";
     } elseif ($data_od) {
@@ -85,14 +96,13 @@
     echo "<section id='right'>";
     echo "<table id='tabela'>";
     if ($result->num_rows > 0) {
-
         
         echo "<tr>";
         echo "<th id='data'>Data</th>";
         echo "<th>Godzina</th>";
         echo "<th>Pracownik</th>";
 
-        // Adjust table headers based on checkbox
+        
         if ($opis_checked) {
             echo "<th>Opis</th>";
         } else {
@@ -105,10 +115,8 @@
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
 
-            // Display the date only for the first row of each group
             if ($currentDate !== $row["Data"]) {
                 $currentDate = $row["Data"];
-                // Count the number of rows for the current date
                 $dateRowCount = $conn->query("SELECT COUNT(*) as count FROM `harmonogram` WHERE Data = '$currentDate'")->fetch_assoc()['count'];
                 echo "<td id='data' rowspan='$dateRowCount'>" . $row["Data"] . "</td>";
             }
@@ -116,7 +124,6 @@
             echo "<td>" . $row["Godzina"] . "</td>";
             echo "<td>" . $row["Pracownik"] . "</td>";
 
-            // Adjust table content based on checkbox
             if ($opis_checked) {
                 echo "<td>" . $row["Opis"] . "</td>";
             } else {

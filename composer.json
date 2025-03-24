@@ -1,9 +1,18 @@
 {
-    "name": "tekom-praktyki/harmonogram",
-    "description": "tworzenie raportow z bazy danych",
-    "type": "library",
+    "name": "praktykant/harmonogram-pracy",
+    "description": "Projekt PHP do wizualizacji zlecen",
+    "autoload": {
+        "psr-4": {
+            "Praktykant\\HarmonogramPracy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maciej"
+        }
+    ],
+    "minimum-stability": "stable",
     "require": {
         "phpoffice/phpword": "^1.3"
-    },
-    "minimum-stability": "stable"
+    }
 }
